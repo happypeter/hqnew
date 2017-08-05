@@ -33,13 +33,14 @@ app.get('/news', (req, res) => {
 })
 
 
-
 app.post('/new', (req, res) => {
-  fs.readFile('./array.json', 'utf-8', (err, data) => {
+  fs.readFile('./news.json', 'utf-8', (err, data) => {
     if (err) throw err
-    let arr = JSON.parse(`[${data}]`)
-    arr.push(req.body.newEp)
-    const file = fs.createWriteStream('array.json');
+    console.log('peter, req.body', req.body)
+    let newData = data.substr(0, data.length -2) // -2 to remove , and \n
+    let arr = JSON.parse(`[${newData}]`)
+    arr.push(req.body) // { title: '', link: '', date: ''}
+    const file = fs.createWriteStream('news.json');
     // 似乎不用全部读出文件内容，然后操作，
     // 有没有 file.append 此类的操作呢？FIXME
     file.on('error', function(err) { console.log(err) })
@@ -49,6 +50,9 @@ app.post('/new', (req, res) => {
       }
     )
     file.end()
+    res.json({
+      msg: "提交成功"
+    })
   })
 })
 
