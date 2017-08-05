@@ -11,21 +11,30 @@ const fs = require('fs')
 //   })
 // })
 //
+
+
+  //  app.post('/add', (req, res) => {
+      fs.readFile('./array.json', 'utf-8', (err, data) => {
+        if (err) throw err
+        let arr = JSON.parse(`[${data}]`)
+        arr.push({
+          title: "test",
+          link: "test"
+        })
+        const file = fs.createWriteStream('array.json');
+        // 似乎不用全部读出文件内容，然后操作，
+        // 有没有 file.append 此类的操作呢？FIXME
+        file.on('error', function(err) { console.log(err) })
+        arr.forEach(
+          function(obj) {
+            file.write(JSON.stringify(obj) + ',\n')
+          }
+        )
+        file.end()
+      })
+  //  })
+
+
 // app.listen(3010, () => {
 //   console.log('running on port 3010');
 // })
-
-
-
-  fs.readFile('./news.json', 'utf-8', (err, data) => {
-    if (err) throw err
-    let arr = JSON.parse(`[${data}]`)
-    const file = fs.createWriteStream('array.json');
-    file.on('error', function(err) { /* error handling */ })
-    arr.forEach(
-      function(obj) {
-        file.write(JSON.stringify(obj) + ',\n')
-      }
-    )
-    file.end()
-  })
